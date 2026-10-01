@@ -1,0 +1,10 @@
+{
+  "buildCommand": "npm --prefix SetuX/frontend/setux-frontend install && npm --prefix SetuX/frontend/setux-frontend run build",
+  "outputDirectory": "SetuX/frontend/setux-frontend/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

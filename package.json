@@ -1,0 +1,8 @@
+{
+  "name": "setux",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix SetuX/frontend/setux-frontend install && npm --prefix SetuX/frontend/setux-frontend run build"
+  }
+}
