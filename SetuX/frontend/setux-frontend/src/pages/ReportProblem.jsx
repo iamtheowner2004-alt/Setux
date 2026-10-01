@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { NODE_API_BASE } from "../services/api";
 
 function ReportProblem() {
   const navigate = useNavigate();
@@ -207,7 +208,7 @@ function ReportProblem() {
       );
 
       const response = await fetch(
-        "http://localhost:5000/api/problems",
+        `${NODE_API_BASE}/problems`,
         {
           method: "POST",
 

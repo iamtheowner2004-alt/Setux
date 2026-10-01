@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { NODE_API_BASE } from "../services/api";
 
 function ProblemDetails() {
   const { id } = useParams();
@@ -24,7 +25,7 @@ function ProblemDetails() {
         }
 
         const response = await fetch(
-          `http://localhost:5000/api/problems/${id}`,
+          `${NODE_API_BASE}/problems/${id}`,
           {
             method: "GET",
             headers: {

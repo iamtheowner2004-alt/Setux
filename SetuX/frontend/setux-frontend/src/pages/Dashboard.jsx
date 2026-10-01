@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { NODE_API_BASE } from "../services/api";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ function Dashboard() {
       } catch {}
 
       const response = await fetch(
-        "http://localhost:5000/api/problems/my-problems",
+        `${NODE_API_BASE}/problems/my-problems`,
         {
           method: "GET",
           headers: {

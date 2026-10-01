@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import TutorialModal from "../components/TutorialModal";
+import { NODE_API_BASE } from "../services/api";
 
 function Signup() {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ function Signup() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/auth/signup",
+        `${NODE_API_BASE}/auth/signup`,
         {
           method: "POST",
           headers: {
