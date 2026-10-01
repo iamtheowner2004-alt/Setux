@@ -178,11 +178,15 @@ function AdminDashboard() {
       setMatchingUniversities(true);
       const res = await adminAPI.matchUniversities(probId);
       if (res.success && res.university_recommendations) {
-        showNotification(`✓ Matched ${res.university_recommendations.length} Indian universities via OpenAlex!`);
+        const rawUnis = res.university_recommendations;
+        const uniArray = Array.isArray(rawUnis)
+          ? rawUnis
+          : (rawUnis.top_universities || []);
+        showNotification(`✓ Matched ${uniArray.length} Indian universities via OpenAlex!`);
         await loadData();
         setSelectedProblem((prev) => ({
           ...prev,
-          university_recommendations: res.university_recommendations,
+          university_recommendations: uniArray,
           ai_analysis: res.ai_analysis || prev.ai_analysis,
         }));
       } else {
@@ -919,10 +923,14 @@ function AdminDashboard() {
               )}
             </div>
 
-            {selectedProblem &&
-            selectedProblem.university_recommendations?.length > 0 ? (
-              <div className="space-y-4">
-                {selectedProblem.university_recommendations.map((uni, idx) => {
+            {(() => {
+              const uniList = Array.isArray(selectedProblem?.university_recommendations)
+                ? selectedProblem.university_recommendations
+                : (selectedProblem?.university_recommendations?.top_universities || []);
+
+              return selectedProblem && uniList.length > 0 ? (
+                <div className="space-y-4">
+                  {uniList.map((uni, idx) => {
                   const isApproved =
                     selectedProblem.selected_university_index === idx ||
                     (selectedProblem.selected_university?.name === uni.name);
@@ -1115,7 +1123,8 @@ function AdminDashboard() {
               <div className="rounded-2xl border border-[#e5e3dc] bg-white p-8 text-center text-sm text-[#89918a]">
                 Select a problem above to inspect matched universities.
               </div>
-            )}
+            );
+            })()}
           </section>
 
           {/* =================================================

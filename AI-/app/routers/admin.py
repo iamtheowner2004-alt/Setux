@@ -658,9 +658,14 @@ async def match_universities_for_problem(problem_id: str):
             ai_analysis = analysis
 
         # Step 2: Live OpenAlex Academic Search & Ranking
-        top_universities = find_best_universities(research_queries)
+        uni_result = find_best_universities(research_queries)
+        top_universities = (
+            uni_result.get("top_universities", [])
+            if isinstance(uni_result, dict)
+            else uni_result
+        )
 
-        # Step 3: Persist results in MongoDB
+        # Step 3: Persist clean list in MongoDB
         update_doc = {
             "university_recommendations": top_universities,
             "status": "pending_admin_review"
