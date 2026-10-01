@@ -1,0 +1,44 @@
+# ================================================================
+# AI ENGINE — .gitignore (AI-/)
+# ================================================================
+
+# Sensitive credentials — NEVER commit
+.env
+.env.*
+*.env
+
+# Python virtual environment
+venv/
+.venv/
+env/
+ENV/
+
+# Python bytecode cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+
+# Python package/build artifacts
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+
+# Testing & type checking
+.pytest_cache/
+.mypy_cache/
+.tox/
+htmlcov/
+.coverage
+coverage.xml
+
+# Editor files
+.vscode/
+.idea/
+*.suo
+*.sw?
+.DS_Store

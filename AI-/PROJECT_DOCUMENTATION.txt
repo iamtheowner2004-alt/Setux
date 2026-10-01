@@ -1,0 +1,844 @@
+================================================================================
+                    SOCIETAL INNOVATION AI AGENT PLATFORM
+             COMPLETE TECHNICAL ARCHITECTURE, WORKFLOW & API GUIDE
+================================================================================
+
+TABLE OF CONTENTS
+-----------------
+1. PROJECT OVERVIEW & CORE OBJECTIVES
+2. COMPLETE TECH STACK: WHAT IS USED & WHY IT IS USED
+3. DATABASE ARCHITECTURE & MONGODB COLLECTIONS
+4. DETAILED END-TO-END SYSTEM WORKFLOW & DATA LIFECYCLE
+   - Phase 1: Problem Ingestion, AI Analysis, Duplicate Detection & Academic Discovery
+   - Phase 2: Admin University Review, Email Dispatch & University Decision Loop
+   - Phase 3: University Solution Submission & AI-Driven Real-Time Industry Matching
+   - Phase 4: Admin Industry Approval, Outreach & Industry Response Loop
+   - Phase 5: Automatic Government Escalation & Report Synthesis
+5. COMPLETE API ENDPOINT SPECIFICATIONS & HOOKINGS
+   - System Health & Root APIs
+   - Problem & Research Discovery APIs
+   - University Management & Response APIs
+   - Admin Problem & University Outreach APIs
+   - Solution Analysis APIs
+   - Industry Discovery & Matching APIs
+   - Admin Industry Management APIs
+   - Industry Response Management APIs
+   - Government Escalation APIs
+6. CORE ALGORITHMS, FORMULAS & HEURISTICS
+   - Cosine Similarity & Semantic Duplicate Detection
+   - Academic Institution Scoring & Ranking Model
+   - Higher Education Institution (HEI) Filtering Engine
+7. AI PROMPT ENGINEERING, SAFETY & RETRY STRATEGY
+8. ENVIRONMENT CONFIGURATION & SETUP REQUIREMENTS
+
+
+================================================================================
+1. PROJECT OVERVIEW & CORE OBJECTIVES
+================================================================================
+
+The Societal Innovation AI Agent Platform is an end-to-end multi-agent system
+designed to automate and streamline the resolution of real-world civic and
+societal challenges across India.
+
+The platform creates a unified, closed-loop collaboration ecosystem bridging four
+primary entities:
+  1. Citizens (who report grassroots societal challenges)
+  2. Universities / Higher Education Institutions (who provide research, faculty,
+     and student innovation to design solutions)
+  3. Industry Partners / MSMEs / CSR Bodies (who provide manufacturing, funding,
+     technology, testing, and deployment at scale)
+  4. Government Authorities (who intervene and provide statutory or financial
+     support when industry partnerships are unavailable)
+
+Core Objectives:
+- Eliminate duplicate problem reporting using dense semantic embeddings.
+- Automatically extract domain categories, priority scores, and academic queries.
+- Dynamically query real academic bibliographic indexes (OpenAlex) to identify
+  the most qualified Indian universities and research institutions.
+- Facilitate admin-in-the-loop human oversight before initiating outbound
+  communications.
+- Leverage real-time web searches and LLM reasoning to identify authentic Indian
+  industry partners capable of implementing university solutions.
+- Implement automated escalation workflows to government bodies when private
+  sector adoption fails, ensuring no citizen problem is left unaddressed.
+
+
+================================================================================
+2. COMPLETE TECH STACK: WHAT IS USED & WHY IT IS USED
+================================================================================
+
+1. PYTHON 3.10+
+   - What it is: High-level, dynamically typed programming language.
+   - Why it is used: Python is the standard language for AI/LLM engineering,
+     offering rich asynchronous support, clean syntax, and top-tier client
+     libraries for machine learning, web APIs, and database drivers.
+
+2. FASTAPI
+   - What it is: Modern, high-performance web framework for building APIs with
+     Python 3.8+ based on standard Python type hints.
+   - Why it is used:
+     * Asynchronous execution (ASGI): Built on Starlette, allowing non-blocking
+       I/O for AI calls, database operations, and external network requests.
+     * Automatic interactive documentation: Generates interactive Swagger UI
+       (/docs) and ReDoc (/redoc) schemas automatically.
+     * High developer velocity and strict type safety via native Pydantic integration.
+
+3. UVICORN (STANDARD)
+   - What it is: Lightning-fast ASGI web server implementation for Python.
+   - Why it is used: Serves the FastAPI application using uvloop and httptools,
+     providing optimal throughput and low latency under concurrent traffic.
+
+4. PYDANTIC (V2)
+   - What it is: Data validation and settings management library using Python type
+     annotations.
+   - Why it is used:
+     * Validates incoming HTTP payloads before reaching router handlers.
+     * Enforces structural integrity on complex data models (ProblemRequest,
+       SolutionRequest, UniversityCreate, IndustrySearchRequest).
+     * Prevents invalid data from entering the database or AI prompt pipelines.
+
+5. MONGODB & PYMONGO
+   - What it is: Document-oriented NoSQL database and its official Python driver.
+   - Why it is used:
+     * Schema flexibility: AI outputs (nested JSON, arrays of search results,
+       variable metadata from OpenAlex and web scraping) vary significantly in
+       structure. MongoDB handles deeply nested hierarchical JSON documents natively.
+     * Scalability and query simplicity: Fast lookups and in-place document updates
+       for workflow state transitions (updating arrays of recommendations, status
+       flags, and timestamps).
+
+6. GOOGLE GENAI SDK (`google-gen-ai`) & GEMINI MODELS
+   - What it is: Google's official client library for Gemini generative AI models.
+   - Models Used:
+     * `gemini-3.6-flash`: Utilized for prompt-driven text generation, problem
+       analysis, solution viability assessment, industry candidate evaluation,
+       and government report drafting.
+       Why used: Fast inference speed, high context reasoning, and reliability in
+       strictly outputting valid JSON without hallucinated formatting.
+     * `gemini-embedding-001`: Utilized for generating text embeddings.
+       Why used: Converts problem text into dense vector representations to perform
+       semantic similarity matching and deduplication.
+
+7. OPENALEX API (`https://api.openalex.org`)
+   - What it is: Free, open, and fully indexed bibliographic catalog of global
+     scientific research papers, authors, institutions, and concepts.
+   - Why it is used:
+     * Grounds academic institution recommendations in real, verifiable scientific
+       literature rather than static or hallucinated lists.
+     * Allows precise geographic filtering (`institutions.country_code:IN`) to target
+       Indian universities with demonstrated publication history in specific problem areas.
+     * Provides institution metadata (ROR IDs, official homepage URLs, works counts,
+       and total citations).
+
+8. DUCKDUCKGO SEARCH (`ddgs` / `duckduckgo_search`)
+   - What it is: Python library for executing DuckDuckGo search queries programmatically.
+   - Why it is used:
+     * Provides live, real-time web search capabilities to discover active Indian
+       companies, MSMEs, startups, and NGOs based on solution technologies.
+     * Free and requires no proprietary paid API keys, preventing vendor lock-in.
+
+9. FASTAPI-MAIL & AIOSMTPLIB
+   - What it is: Asynchronous mail sending wrapper for FastAPI using standard SMTP.
+   - Why it is used:
+     * Sends automated email invitations to university administrators and nodal officers.
+     * Asynchronous execution ensures sending an email does not block worker threads
+       or delay API responses.
+
+10. PYTHON-DOTENV
+    - What it is: Environment variable loader from `.env` files.
+    - Why it is used:
+      * Adheres to Twelve-Factor App security guidelines by keeping database connection
+        strings, API keys, and mail passwords outside the source code.
+
+11. HTTPX
+    - What it is: Modern, fully featured HTTP client for Python with sync and async support.
+    - Why it is used:
+      * Makes clean, resilient HTTP calls to OpenAlex endpoints with configurable
+        timeouts and error status checking.
+
+12. BSON / OBJECTID
+    - What it is: Binary JSON library bundled with PyMongo for unique identifier handling.
+    - Why it is used:
+      * Validates, encodes, and decodes 12-byte / 24-hex-character MongoDB ObjectIds
+        across all router endpoints.
+
+
+================================================================================
+3. DATABASE ARCHITECTURE & MONGODB COLLECTIONS
+================================================================================
+
+Database Name: `societal_innovation` (configured in `app/database/mongodb.py`)
+
+The platform uses 5 specialized collections:
+
+1. `problems` COLLECTION
+   - Purpose: Stores citizen-submitted societal problems, semantic embeddings,
+     AI analysis, recommended universities, outreach email records, and workflow state.
+   - Schema Structure:
+     {
+       "_id": ObjectId("..."),
+       "title": "Groundwater Contamination in Village",
+       "description": "High levels of arsenic and fluoride found in handpumps...",
+       "location": "Varanasi, Uttar Pradesh",
+       "embedding": [0.0123, -0.0456, ...],       // 768-dim float vector
+       "ai_analysis": {
+         "summary": "...",
+         "category": "Water Management",
+         "subcategory": "Groundwater Quality",
+         "severity": "High",
+         "priority_score": 88,
+         "keywords": ["groundwater", "arsenic", "filtration"],
+         "required_expertise": ["Environmental Engineering", "Hydrogeology"],
+         "research_queries": ["groundwater arsenic remediation India", ...]
+       },
+       "university_recommendations": [
+         {
+           "name": "Indian Institute of Technology (BHU) Varanasi",
+           "openalex_id": "https://openalex.org/I123...",
+           "country_code": "IN",
+           "relevant_papers": 14,
+           "papers": ["Paper Title 1", "Paper Title 2"],
+           "official_website": "https://iitbhu.ac.in",
+           "institution_type": "education",
+           "ror": "https://ror.org/...",
+           "works_count": 18450,
+           "cited_by_count": 120500,
+           "source_verification": {
+             "official_source_available": true,
+             "manual_verification_required": true,
+             "verification_status": "source_found"
+           },
+           "match_score": 95,
+           "status": "pending | approved | contacted | accepted | declined",
+           "response": null | "accepted" | "declined"
+         }
+       ],
+       "selected_university": { ... },
+       "selected_university_index": 0,
+       "previous_university_index": null,
+       "university_response": "pending | accepted | declined",
+       "university_email": {
+         "recipient": "dean_research@univ.ac.in",
+         "subject": "Collaboration Opportunity: ...",
+         "sent": true
+       },
+       "status": "pending_admin_review | approved_for_university_outreach |
+                  university_contacted | university_accepted |
+                  pending_next_university | all_universities_declined"
+     }
+
+2. `universities` COLLECTION
+   - Purpose: Master registry of participating or verified universities.
+   - Schema Structure:
+     {
+       "_id": ObjectId("..."),
+       "name": "Indian Institute of Technology Delhi",
+       "city": "New Delhi",
+       "state": "Delhi",
+       "departments": ["Civil Engineering", "Biochemical Engineering"],
+       "research_areas": ["Water Purification", "Renewable Energy"],
+       "faculty_expertise": ["Dr. A - Water Filtration", "Dr. B - Nanomaterials"],
+       "labs": ["Environmental Engineering Lab", "Water Quality Testing Lab"],
+       "innovation_centers": ["Center of Excellence in Water Management"],
+       "website": "https://home.iitd.ac.in",
+       "contact_email": "rnd@iitd.ac.in",
+       "verified": false
+     }
+
+3. `solutions` COLLECTION
+   - Purpose: Stores solution proposals submitted by universities.
+   - Schema Structure:
+     {
+       "_id": ObjectId("..."),
+       "problem_id": ObjectId("..."),
+       "solution_title": "Low-Cost Solar-Powered Arsenic Filter",
+       "solution_description": "A nano-adsorbent based solar-driven filtration system...",
+       "technologies": ["Nanotechnology", "Solar PV", "Adsorption"]
+     }
+
+4. `industry_recommendations` COLLECTION
+   - Purpose: Stores AI-generated solution analyses, web search queries, raw web
+     candidate hits, Gemini-ranked industry partners, admin selection states, and
+     industry response workflows.
+   - Schema Structure:
+     {
+       "_id": ObjectId("..."),
+       "problem_id": ObjectId("..."),
+       "solution": {
+         "solution_title": "...",
+         "solution_description": "...",
+         "technologies": [...]
+       },
+       "solution_analysis": {
+         "solution_summary": "...",
+         "relevance_score": 92,
+         "solution_status": "promising",
+         "strengths": [...],
+         "limitations": [...],
+         "implementation_needs": [...],
+         "required_industries": ["Water Treatment Equipment", "Solar PV"],
+         "industry_search_queries": ["water filter manufacturer India", ...],
+         "recommended_next_steps": [...]
+       },
+       "search_queries": [...],
+       "recommended_industries": [
+         {
+           "name": "Tata Cleantech Capital / Water Division",
+           "website": "https://www.tatacleantech.com",
+           "sector": "Cleantech & Water Infrastructure",
+           "match_score": 90,
+           "india_relevance": "High",
+           "why_recommended": "Leading domestic player in scalable water systems...",
+           "possible_contribution": ["Manufacturing scale", "Distribution"],
+           "status": "pending | approved | invited | accepted | declined",
+           "response": null | "accepted" | "rejected" | "not_interested"
+         }
+       ],
+       "industry_result": { ... },
+       "selected_industry": { ... },
+       "selected_industry_index": 0,
+       "previous_industry_index": null,
+       "industry_response": "pending | accepted | rejected | not_interested",
+       "status": "pending_admin_review | industry_approved | industry_invited |
+                  industry_collaboration_started | pending_next_industry |
+                  industry_declined | escalated_to_government | no_candidates_found |
+                  admin_rejected"
+     }
+
+5. `government_reports` COLLECTION
+   - Purpose: Stores synthesized escalation reports for municipal, state, or central
+     government authorities when private industry collaboration cannot be achieved.
+   - Schema Structure:
+     {
+       "_id": ObjectId("..."),
+       "problem_id": ObjectId("..."),
+       "recommendation_id": ObjectId("..."),
+       "report": {
+         "report_title": "Escalation Report: Arsenic Remediation System",
+         "problem_summary": "...",
+         "solution_summary": "...",
+         "industry_outreach_summary": "Contacted 3 domestic manufacturers; all declined due to CAPEX.",
+         "reason_for_escalation": "Critical public health hazard requiring state funding.",
+         "recommended_government_actions": [
+           "Allocate funding under Jal Jeevan Mission",
+           "Pilot deployment in Varanasi district"
+         ],
+         "suggested_authority_type": "State Government / Ministry of Jal Shakti",
+         "urgency": "High"
+       },
+       "status": "pending_government_review",
+       "escalation_reason": "Industry declined collaboration"
+     }
+
+
+================================================================================
+4. DETAILED END-TO-END SYSTEM WORKFLOW & DATA LIFECYCLE
+================================================================================
+
+--------------------------------------------------------------------------------
+PHASE 1: Problem Ingestion, AI Analysis, Deduplication & Academic Discovery
+--------------------------------------------------------------------------------
+1. Citizen submits a problem via `POST /api/ai/analyze-problem` containing:
+   - title, description, location.
+
+2. AI Analysis (`app/services/problem_analyzer.py`):
+   - Prompt sent to `gemini-3.6-flash` instructing it to return strict JSON.
+   - Computes: summary, category, subcategory, severity, priority score (1-100),
+     keywords, required expertise, and 3-5 academic research queries tailored for India.
+
+3. Semantic Duplicate Detection (`app/services/duplicate_detector.py`):
+   - Generates a 768-dimensional vector embedding for `"title. description"` using
+     `gemini-embedding-001`.
+   - Iterates through all existing problems in MongoDB, computing Cosine Similarity
+     between new vector and stored vectors.
+   - If similarity >= 85%:
+     * Returns immediate response indicating duplicate detected, along with matching
+       problem IDs and similarity scores. Workflow terminates here.
+
+4. OpenAlex Academic Discovery (`app/services/university_agent.py`):
+   - For each generated academic research query, queries OpenAlex API with
+     `filter=institutions.country_code:IN`.
+   - Extracts Indian institutions and paper titles, aggregating citation/work counts.
+   - Merges institution records across multiple queries to build a composite research profile.
+
+5. Filtering & Enrichment (`app/services/university_filter.py` & `official_source_verifier.py`):
+   - Runs heuristic keyword filtering (whitelisting "university", "IIT", "NIT",
+     "institute of technology" while blacklisting "hospital", "pvt ltd", "company").
+   - Enriches institutions via OpenAlex Institutions endpoint to fetch official website URLs,
+     ROR IDs, works counts, and type.
+
+6. Ranking & Scoring (`app/services/university_matcher.py`):
+   - Computes a match score (0-100) based on:
+     * Relevant papers found (up to 60 pts)
+     * Official website availability (20 pts)
+     * Research volume / activity (up to 20 pts)
+   - Sorts institutions in descending order and selects the Top 5 candidates.
+
+7. Database Persistence:
+   - Stores problem document in `problems` collection with status `"pending_admin_review"`.
+
+--------------------------------------------------------------------------------
+PHASE 2: Admin University Review, Email Dispatch & University Decision Loop
+--------------------------------------------------------------------------------
+1. Admin fetches pending problems via `GET /api/admin/problems/pending`.
+   - Retrieves all problems with status `pending_admin_review` or `pending_next_university`.
+
+2. Admin Approves a University via `POST /api/admin/problems/{id}/approve-university`:
+   - Validates the selected university index.
+   - Updates the chosen university's status to `"approved"`.
+   - Updates the problem document's status to `"approved_for_university_outreach"`.
+
+3. Email Preview & Dispatch (`app/services/email_service.py` & `app/routers/admin.py`):
+   - Admin previews generated email via `GET /api/admin/problems/{id}/university-email-preview`.
+   - Admin sends email via `POST /api/admin/problems/{id}/send-university-email`.
+   - Asynchronous SMTP sends an official outreach letter inviting the university to form a
+     student-faculty team.
+   - Problem status transitions to `"university_contacted"`.
+
+4. University Responds via `POST /api/universities/problems/{id}/respond?response=accept|decline`:
+   - IF ACCEPTED:
+     * Selected university marked `"accepted"`.
+     * Problem status transitions to `"university_accepted"`.
+   - IF DECLINED:
+     * Selected university marked `"declined"`.
+     * System checks for the next pending university in the ranked recommendations.
+     * If next university exists:
+       - Status updates to `"pending_next_university"`, pointing to the new candidate.
+       - Admin can review and dispatch email to the subsequent candidate.
+     * If all recommended universities have declined:
+       - Status transitions to `"all_universities_declined"`.
+
+--------------------------------------------------------------------------------
+PHASE 3: University Solution Submission & AI Real-Time Industry Matching
+--------------------------------------------------------------------------------
+1. Once a university develops a solution, it is analyzed via `POST /api/ai/find-industries`
+   (or evaluated via `POST /api/ai/analyze-solution`).
+   - Request includes `problem_id`, `solution_title`, `solution_description`, and `technologies`.
+
+2. Solution Analysis (`app/services/solution_analyzer.py`):
+   - `gemini-3.6-flash` analyzes the solution against the original problem.
+   - Computes: relevance score (0-100), status (promising/partially_relevant/not_relevant),
+     strengths, limitations, implementation needs, required industry sectors, and
+     3 to 5 targeted Indian industry web search queries.
+
+3. Real-Time Web Search (`app/services/industry_search.py`):
+   - Executes DuckDuckGo text searches for each AI-generated query.
+   - Collects live web results (page titles, URLs, snippets/descriptions), deduplicating by URL.
+
+4. AI Industry Partner Ranking (`app/services/industry_matcher.py`):
+   - Feeds the original problem, solution analysis, required sectors, and raw web search
+     candidates into `gemini-3.6-flash`.
+   - AI evaluates ONLY the real candidates provided (strict anti-hallucination rules).
+   - Generates scores, relevance to India, explanation, and possible contributions.
+   - Rejects non-viable candidates with stated reasons.
+
+5. Database Persistence:
+   - Saves record into `industry_recommendations` collection with status `"pending_admin_review"`.
+
+--------------------------------------------------------------------------------
+PHASE 4: Admin Industry Approval, Outreach & Industry Response Loop
+--------------------------------------------------------------------------------
+1. Admin fetches pending industry recommendations via
+   `GET /api/admin/industry-recommendations/pending`.
+
+2. Admin Approves an Industry Partner via
+   `POST /api/admin/industry-recommendations/{id}/approve-industry`:
+   - Marks selected industry as `"approved"`.
+   - Updates recommendation status to `"industry_approved"`.
+   - (Alternatively, admin can reject the entire recommendation via `POST /{id}/reject`).
+
+3. Invitation Marking via `POST /api/industry/{id}/mark-invitation-sent`:
+   - Transitions status to `"industry_invited"`.
+
+4. Industry Responds via `POST /api/industry/{id}/respond?response=accepted|rejected|not_interested`:
+   - IF ACCEPTED:
+     * Recommendation status transitions to `"industry_collaboration_started"`.
+     * Collaborative deployment begins between University and Industry.
+   - IF REJECTED / DECLINED:
+     * Selected industry marked `"declined"`.
+     * System checks if another pending candidate exists in `recommended_industries`.
+     * If next candidate exists:
+       - Status transitions to `"pending_next_industry"`, advancing the pointer.
+     * If all candidate industries have declined:
+       - Status transitions to `"industry_declined"`.
+       - System AUTOMATICALLY triggers Government Escalation.
+
+--------------------------------------------------------------------------------
+PHASE 5: Automatic Government Escalation & Report Synthesis
+--------------------------------------------------------------------------------
+1. Escalation Trigger (`app/services/government_agent.py`):
+   - Triggered automatically when all industries decline, or manually via
+     `POST /api/government/escalate/{recommendation_id}`.
+
+2. AI Escalation Synthesis (`gemini-3.6-flash`):
+   - Reads: Original Citizen Problem, University Solution, Solution Analysis,
+     and History of Declined Industry Outreach.
+   - Synthesizes an executive policy report:
+     * Professional Title
+     * Problem & Solution Summaries
+     * Outreach Failure Breakdown
+     * Justification for Government Intervention
+     * Concrete Action Items for Policymakers
+     * Suggested Authority Level (e.g., Central Ministry, State Dept, Municipal Corp)
+     * Urgency Assessment (Low / Medium / High / Critical)
+
+3. Database Persistence:
+   - Saves the generated report into `government_reports` collection.
+   - Recommendation status updated to `"escalated_to_government"`.
+   - Report status set to `"pending_government_review"`.
+
+
+================================================================================
+5. COMPLETE API ENDPOINT SPECIFICATIONS & HOOKINGS
+================================================================================
+
+All endpoints are prefixed under `/api` except root and health routes.
+
+--------------------------------------------------------------------------------
+A. SYSTEM HEALTH & ROOT
+--------------------------------------------------------------------------------
+
+1. Root Endpoint
+   - Path: `GET /`
+   - Description: Verifies the service is running.
+   - Response:
+     { "message": "Societal Innovation AI Agent is running" }
+
+2. Health Check Endpoint
+   - Path: `GET /health`
+   - Description: Pings MongoDB instance to verify database connectivity.
+   - Response (Healthy):
+     { "status": "healthy", "database": "connected" }
+   - Response (Unhealthy):
+     { "status": "unhealthy", "database": "disconnected", "error": "<details>" }
+
+--------------------------------------------------------------------------------
+B. PROBLEM & RESEARCH DISCOVERY APIS (`app/routers/problem.py`, `research.py`)
+--------------------------------------------------------------------------------
+
+3. Analyze Problem & Discover Universities
+   - Path: `POST /api/ai/analyze-problem`
+   - Request Body (`ProblemRequest`):
+     {
+       "title": "Severe Arsenic in Drinking Water",
+       "description": "High toxicity in tube wells affecting over 5000 villagers...",
+       "location": "Murshidabad, West Bengal"
+     }
+   - Internal Hooking:
+     1. Calls `analyze_problem_with_ai()` in `problem_analyzer.py`.
+     2. Calls `detect_duplicate_problem()` in `duplicate_detector.py`.
+     3. Calls `find_best_universities()` in `university_agent.py`.
+     4. Inserts into `problems_collection`.
+   - Response (Normal):
+     {
+       "success": true,
+       "status": "pending_admin_review",
+       "problem_id": "67c123456789...",
+       "analysis": { ... },
+       "university_discovery": {
+         "total_candidates": 18,
+         "total_heis": 12,
+         "top_universities": [ ... ]
+       },
+       "duplicate_check": { "is_duplicate": false, "similar_problems": [] }
+     }
+   - Response (If Duplicate Found):
+     {
+       "success": true,
+       "status": "duplicate_detected",
+       "message": "A similar problem already exists.",
+       "duplicate": { "problem_id": "...", "title": "...", "similarity": 89.4 }
+     }
+
+4. Direct Research University Matcher
+   - Path: `GET /api/research/match-universities?query=water+arsenic+India&per_page=25`
+   - Description: Standalone utility to query OpenAlex for Indian HEIs based on any
+     custom query string without creating a database problem record.
+   - Response:
+     {
+       "success": true,
+       "query": "water arsenic India",
+       "total_institutions_found": 15,
+       "total_heis_found": 9,
+       "top_universities": [ ... ]
+     }
+
+--------------------------------------------------------------------------------
+C. UNIVERSITY MANAGEMENT & RESPONSE APIS (`app/routers/university.py`)
+--------------------------------------------------------------------------------
+
+5. Register a University
+   - Path: `POST /api/universities/`
+   - Request Body (`UniversityCreate`):
+     {
+       "name": "Jadavpur University",
+       "city": "Kolkata",
+       "state": "West Bengal",
+       "departments": ["Chemical Engineering"],
+       "research_areas": ["Water Purification"],
+       "faculty_expertise": ["Dr. S. Roy - Arsenic Filters"],
+       "labs": ["Environmental Tech Lab"],
+       "innovation_centers": ["JU Water Hub"],
+       "website": "http://www.jaduniv.edu.in",
+       "contact_email": "dean@jadavpur.edu"
+     }
+   - Response:
+     { "success": true, "university_id": "...", "message": "University added successfully" }
+
+6. University Response to Problem Invitation
+   - Path: `POST /api/universities/problems/{problem_id}/respond?response=accept|decline`
+   - Internal Hooking:
+     * Verifies problem is in `"university_contacted"` status.
+     * If `accept`: Updates selected university to `"accepted"`, problem status to `"university_accepted"`.
+     * If `decline`: Marks university `"declined"`, scans for next pending candidate in
+       `university_recommendations`. If found, updates status to `"pending_next_university"`;
+       if none remain, updates status to `"all_universities_declined"`.
+
+--------------------------------------------------------------------------------
+D. ADMIN PROBLEM & UNIVERSITY OUTREACH APIS (`app/routers/admin.py`)
+--------------------------------------------------------------------------------
+
+7. Get Pending Problems for Admin Review
+   - Path: `GET /api/admin/problems/pending`
+   - Description: Lists all problems awaiting admin review (`pending_admin_review` or `pending_next_university`).
+
+8. Approve a University for a Problem
+   - Path: `POST /api/admin/problems/{problem_id}/approve-university?university_index=0`
+   - Description: Admin approves the university candidate at index `university_index`.
+   - Status Transition: Sets problem status to `"approved_for_university_outreach"`.
+
+9. Preview University Invitation Email
+   - Path: `GET /api/admin/problems/{problem_id}/university-email-preview`
+   - Description: Renders the personalized invitation email body and subject without sending it.
+
+10. Send University Invitation Email
+    - Path: `POST /api/admin/problems/{problem_id}/send-university-email?recipient_email=dean@univ.edu`
+    - Description: Sends the official email via FastMail/SMTP and updates problem status
+      to `"university_contacted"`.
+
+--------------------------------------------------------------------------------
+E. SOLUTION ANALYSIS APIS (`app/routers/solution.py`)
+--------------------------------------------------------------------------------
+
+11. Analyze Proposed Solution
+    - Path: `POST /api/ai/analyze-solution`
+    - Request Body (`SolutionRequest`):
+      {
+        "problem_id": "67c123456789...",
+        "solution_title": "Nano-Adsorbent Arsenic Filtration Unit",
+        "solution_description": "A gravity-based water purifier using iron-oxide nanoparticles...",
+        "technologies": ["Nanotechnology", "Gravity Filtration", "Adsorption Media"]
+      }
+    - Internal Hooking: Calls `analyze_solution_with_ai()` in `solution_analyzer.py`.
+    - Response:
+      {
+        "success": true,
+        "problem_id": "...",
+        "solution_analysis": {
+          "solution_summary": "...",
+          "relevance_score": 94,
+          "solution_status": "promising",
+          "strengths": [...],
+          "limitations": [...],
+          "implementation_needs": [...],
+          "required_industries": [...],
+          "industry_search_queries": [...],
+          "recommended_next_steps": [...]
+        }
+      }
+
+--------------------------------------------------------------------------------
+F. INDUSTRY DISCOVERY & MATCHING APIS (`app/routers/industry.py`)
+--------------------------------------------------------------------------------
+
+12. Discover & Rank Industry Partners
+    - Path: `POST /api/ai/find-industries`
+    - Request Body (`IndustrySearchRequest`):
+      {
+        "problem_id": "67c123456789...",
+        "solution_title": "Nano-Adsorbent Arsenic Filtration Unit",
+        "solution_description": "...",
+        "technologies": ["Nanotechnology", "Filtration"]
+      }
+    - Internal Hooking:
+      1. Analyzes solution with Gemini.
+      2. Executes DuckDuckGo web search using generated queries.
+      3. Passes candidate search results to `rank_industries_with_ai()`.
+      4. Saves recommendation document to `industry_recommendations_collection`.
+    - Response:
+      {
+        "success": true,
+        "problem_id": "...",
+        "recommendation_id": "...",
+        "status": "pending_admin_review",
+        "solution_analysis": { ... },
+        "search_queries": [ ... ],
+        "candidates_found": 15,
+        "recommended_industries": [
+          {
+            "name": "Eureka Forbes Limited",
+            "website": "https://www.eurekaforbes.com",
+            "sector": "Water Purification",
+            "match_score": 92,
+            "india_relevance": "High",
+            "why_recommended": "Extensive distribution and manufacturing for water purifiers in India.",
+            "possible_contribution": ["Mass manufacturing", "Rural supply chain"]
+          }
+        ],
+        "industry_result": { ... }
+      }
+
+--------------------------------------------------------------------------------
+G. ADMIN INDUSTRY MANAGEMENT APIS (`app/routers/admin_industry.py`)
+--------------------------------------------------------------------------------
+
+13. Get Pending Industry Recommendations
+    - Path: `GET /api/admin/industry-recommendations/pending`
+    - Description: Lists all industry recommendations awaiting admin approval.
+
+14. Approve Industry Candidate
+    - Path: `POST /api/admin/industry-recommendations/{recommendation_id}/approve-industry?industry_index=0`
+    - Status Transition: Sets recommendation status to `"industry_approved"`.
+
+15. Reject Entire Industry Recommendation
+    - Path: `POST /api/admin/industry-recommendations/{recommendation_id}/reject`
+    - Status Transition: Sets recommendation status to `"admin_rejected"`.
+
+--------------------------------------------------------------------------------
+H. INDUSTRY RESPONSE MANAGEMENT APIS (`app/routers/industry_response.py`)
+--------------------------------------------------------------------------------
+
+16. Mark Industry Invitation as Sent
+    - Path: `POST /api/industry/{recommendation_id}/mark-invitation-sent`
+    - Status Transition: Sets recommendation status to `"industry_invited"`.
+
+17. Record Industry Response
+    - Path: `POST /api/industry/{recommendation_id}/respond?response=accepted|rejected|not_interested`
+    - Internal Hooking:
+      * If `accepted`: Updates status to `"industry_collaboration_started"`.
+      * If `rejected` / `not_interested`: Marks candidate `"declined"`. If a subsequent
+        candidate exists in `recommended_industries`, updates status to
+        `"pending_next_industry"`. If no candidates remain, status becomes
+        `"industry_declined"` and calls `automatically_escalate_to_government()`.
+
+--------------------------------------------------------------------------------
+I. GOVERNMENT ESCALATION APIS (`app/routers/government.py`)
+--------------------------------------------------------------------------------
+
+18. Escalate Recommendation to Government
+    - Path: `POST /api/government/escalate/{recommendation_id}`
+    - Internal Hooking:
+      * Validates that recommendation status is `"industry_declined"`.
+      * Generates a formal escalation report using `gemini-3.6-flash`.
+      * Saves report in `government_reports_collection` with status `"pending_government_review"`.
+      * Updates recommendation status to `"escalated_to_government"`.
+
+
+================================================================================
+6. CORE ALGORITHMS, FORMULAS & HEURISTICS
+================================================================================
+
+1. COSINE SIMILARITY DEDUPLICATION FORMULA
+   - Location: `app/services/duplicate_detector.py`
+   - Formula:
+                     A . B            sum(A_i * B_i)
+     Similarity = ----------- = -----------------------------
+                  ||A|| * ||B||   sqrt(sum(A_i^2)) * sqrt(sum(B_i^2))
+
+   - Algorithm:
+     1. Concatenate problem title and description: `problem_text = f"{title}. {description}"`.
+     2. Generate dense 768-dim float vector via `gemini-embedding-001`.
+     3. Compute Cosine Similarity against all existing problem embeddings in MongoDB.
+     4. Convert to percentage: `similarity * 100`.
+     5. Decision Rule: If `best_match["similarity"] >= 85`, mark `is_duplicate = True`.
+
+2. ACADEMIC INSTITUTION SCORING MODEL
+   - Location: `app/services/university_matcher.py`
+   - Total Maximum Score: 100 Points
+   - Breakdown:
+     * Component 1: Related Research Papers (Max 60 points)
+       Score = min(relevant_papers_count * 10, 60)
+     * Component 2: Verified Official Source / Website (Max 20 points)
+       Score = 20 if official_website_url exists else 0
+     * Component 3: Overall Research Volume / Works Count (Max 20 points)
+       - If works_count >= 10,000 -> 20 points
+       - If works_count >= 5,000  -> 15 points
+       - If works_count >= 1,000  -> 10 points
+       - If works_count > 0       -> 5 points
+       - Else                     -> 0 points
+     * Final Match Score = min(Component 1 + Component 2 + Component 3, 100)
+
+3. HIGHER EDUCATION INSTITUTION (HEI) FILTERING HEURISTICS
+   - Location: `app/services/university_filter.py`
+   - Whitelist Keywords:
+     ["university", "institute of technology", "iit", "national institute of technology",
+      "nit", "indian institute of science", "college", "school of", "academy"]
+   - Blacklist Keywords:
+     ["hospital", "private limited", "pvt", "ltd", "company", "corporation",
+      "laboratory", "laboratories"]
+   - Logic: A candidate is classified as a valid HEI if and only if it contains at least
+     one Whitelist keyword AND contains ZERO Blacklist keywords.
+
+
+================================================================================
+7. AI PROMPT ENGINEERING, SAFETY & RETRY STRATEGY
+================================================================================
+
+1. STRICT JSON ENFORCEMENT
+   - All prompts explicitly mandate: "Return ONLY valid JSON. Do not use markdown code fences.
+     Do not add explanations before or after the JSON."
+   - Cleaners parse output and strip accidental markdown blocks (```json ... ```)
+     prior to `json.loads()` parsing.
+
+2. ANTI-HALLUCINATION CONSTRAINTS
+   - Industry Matcher prompt strictly enforces:
+     * "Analyze ONLY the candidates provided above."
+     * "Do not invent companies."
+     * "Do not recommend a company unless it appears in the provided search candidates."
+     * "If no candidate is suitable, return recommended_industries: [] and
+        industry_search_status: 'no_suitable_industry_found'."
+
+3. EXPONENTIAL BACKOFF RETRY WRAPPER
+   - Location: `call_gemini_with_retry(prompt)` across service files.
+   - Max Attempts: 3
+   - Backoff Formula: `time.sleep(2 * (attempt + 1))` (waits 2s on attempt 1, 4s on attempt 2).
+   - Ensures resilience against intermittent rate limits, transient network drops, or
+     temporary upstream API throttling.
+
+
+================================================================================
+8. ENVIRONMENT CONFIGURATION & SETUP REQUIREMENTS
+================================================================================
+
+File: `.env`
+
+Required Environment Variables:
+--------------------------------------------------------------------------------
+Variable Name   | Description                   | Example Value
+--------------------------------------------------------------------------------
+MONGODB_URL     | MongoDB connection URI        | mongodb://localhost:27017
+DATABASE_NAME   | Database name                 | societal_innovation
+GEMINI_API_KEY  | Google AI Studio API key      | AIzaSy...
+MAIL_USERNAME   | SMTP sender username / email  | portal@example.com
+MAIL_PASSWORD   | SMTP application password     | app-password-here
+MAIL_FROM       | Email sender address          | portal@example.com
+MAIL_PORT       | SMTP port                     | 587
+MAIL_SERVER     | SMTP server address           | smtp.gmail.com
+--------------------------------------------------------------------------------
+
+Installation & Execution:
+1. Create virtual environment:
+   `python -m venv venv`
+2. Activate virtual environment:
+   `venv\Scripts\activate` (Windows) or `source venv/bin/activate` (Linux/macOS)
+3. Install dependencies:
+   `pip install -r requirements.txt`
+4. Run application with hot reloading:
+   `uvicorn app.main:app --reload --port 8000`
+5. Access interactive API documentation:
+   Swagger UI: `http://localhost:8000/docs`
+   ReDoc:      `http://localhost:8000/redoc`
+
+================================================================================
+                             END OF SPECIFICATION
+================================================================================

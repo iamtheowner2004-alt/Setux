@@ -1,0 +1,95 @@
+# ================================================================
+# SETUX — ROOT .gitignore
+# Protects ALL sensitive credentials and generated files
+# ================================================================
+
+# ---------------------------------------------------------------
+# ENVIRONMENT FILES — NEVER COMMIT THESE
+# Contains API keys, DB passwords, SMTP credentials, JWT secrets
+# ---------------------------------------------------------------
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+.env.test
+*.env
+**/.env
+**/.env.*
+!**/.env.example
+
+# ---------------------------------------------------------------
+# PYTHON AI ENGINE (AI-/)
+# ---------------------------------------------------------------
+# Virtual environments
+AI-/venv/
+AI-/.venv/
+AI-/env/
+AI-/__pycache__/
+AI-/**/__pycache__/
+AI-/**/*.pyc
+AI-/**/*.pyo
+AI-/**/*.pyd
+AI-/.Python
+AI-/*.egg-info/
+AI-/dist/
+AI-/build/
+AI-/.pytest_cache/
+AI-/.mypy_cache/
+
+# ---------------------------------------------------------------
+# NODE.JS BACKEND (SetuX/backend/)
+# ---------------------------------------------------------------
+SetuX/backend/node_modules/
+SetuX/backend/npm-debug.log*
+SetuX/backend/yarn-debug.log*
+SetuX/backend/yarn-error.log*
+SetuX/backend/.pnpm-debug.log*
+
+# ---------------------------------------------------------------
+# REACT VITE FRONTEND (SetuX/frontend/setux-frontend/)
+# ---------------------------------------------------------------
+SetuX/frontend/node_modules/
+SetuX/frontend/setux-frontend/node_modules/
+SetuX/frontend/setux-frontend/dist/
+SetuX/frontend/setux-frontend/dist-ssr/
+SetuX/frontend/setux-frontend/.vite/
+SetuX/frontend/setux-frontend/*.local
+SetuX/frontend/setux-frontend/.env
+SetuX/frontend/setux-frontend/.env.*
+
+# ---------------------------------------------------------------
+# EDITOR & OS FILES
+# ---------------------------------------------------------------
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------------------------------------------------------------
+# LOGS & DEBUGGING
+# ---------------------------------------------------------------
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ---------------------------------------------------------------
+# MISC
+# ---------------------------------------------------------------
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+.nyc_output
+coverage/

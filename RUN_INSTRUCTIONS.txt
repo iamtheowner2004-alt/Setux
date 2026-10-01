@@ -1,0 +1,84 @@
+================================================================================
+                    SETUX PLATFORM - EXECUTION GUIDE
+           Autonomous AI Multi-Agent Societal Innovation Platform
+================================================================================
+
+[METHOD 1: ONE-CLICK LAUNCHER (RECOMMENDED)]
+--------------------------------------------------------------------------------
+Simply double-click the file in the project root folder:
+   start-all.bat
+
+This will automatically open 3 separate labeled command windows:
+  1. SetuX AI Engine (Port 8000)
+  2. SetuX Node Backend (Port 5000)
+  3. SetuX React Frontend (Port 5173)
+
+
+================================================================================
+[METHOD 2: MANUAL TERMINAL EXECUTION (STEP-BY-STEP)]
+--------------------------------------------------------------------------------
+
+TERMINAL 1: FastAPI AI Multi-Agent Service (Port 8000)
+------------------------------------------------------
+1. Open PowerShell or Command Prompt.
+2. Run the following commands:
+   cd "C:\Users\SHIVAM VERMA\Desktop\PROJECT\AI-"
+   & ".\venv\Scripts\uvicorn.exe" app.main:app --host 0.0.0.0 --port 8000 --reload
+
+   (API Documentation available at: http://localhost:8000/docs)
+
+
+TERMINAL 2: Node.js Express Backend (Port 5000)
+------------------------------------------------------
+1. Open a second PowerShell or Command Prompt window.
+2. Run the following commands:
+   cd "C:\Users\SHIVAM VERMA\Desktop\PROJECT\SetuX\backend"
+   node server.js
+
+   (Backend API available at: http://localhost:5000/api/problems/all)
+
+
+TERMINAL 3: React Vite Frontend (Port 5173)
+------------------------------------------------------
+1. Open a third PowerShell or Command Prompt window.
+2. Run the following commands:
+   cd "C:\Users\SHIVAM VERMA\Desktop\PROJECT\SetuX\frontend\setux-frontend"
+   npm run dev
+
+   (Web application live at: http://localhost:5173/)
+
+
+================================================================================
+[PORTAL ACCESS & CREDENTIALS]
+--------------------------------------------------------------------------------
+
+1. CITIZEN / PUBLIC PORTAL:
+   - Homepage:          http://localhost:5173/
+   - Citizen Login:     http://localhost:5173/login
+   - Citizen Signup:    http://localhost:5173/signup
+   - Report a Problem:  http://localhost:5173/report-problem
+   - Citizen Dashboard: http://localhost:5173/dashboard
+
+2. ADMINISTRATOR CONTROL PORTAL:
+   - Admin Login:       http://localhost:5173/admin/login
+   - Admin Dashboard:   http://localhost:5173/admin  (Protected)
+   
+   ADMIN CREDENTIALS:
+   ------------------
+   Username: csmuadmin
+   Password: admin1234
+   Role:     admin (Administrator / HITL Controller)
+
+
+================================================================================
+[KEY FEATURES INCLUDED IN THIS PROTOTYPE]
+--------------------------------------------------------------------------------
+1. Citizen Problem Submission with Geo-location & AI duplicate detection
+2. Google Gemini Problem Analysis (Category, Severity, Academic Queries)
+3. OpenAlex Academic Research Agent (Top Indian HEIs matching)
+4. Admin Human-in-the-Loop University Approval & Automated Outreach Email Dispatch
+5. Live DuckDuckGo Indian Industry Matcher & Gemini Commercialization Ranking
+6. Formal Industry PPAP Email Preview & SMTP Dispatch
+7. Automated Government Policy Briefing Escalation Generator
+8. Isolated Citizen vs Admin Dashboards with Clean Logout Redirection
+================================================================================
