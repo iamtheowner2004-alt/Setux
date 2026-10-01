@@ -6,4 +6,5 @@ pydantic
 pymongo[srv]
 httpx
 fastapi-mail
-dnspython
+dnspython
+ddgs
