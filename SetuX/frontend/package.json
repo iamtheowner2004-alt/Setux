@@ -1,6 +1,5 @@
 {
-  "name": "setux",
-  "version": "1.0.0",
+  "name": "setux-frontend-parent",
   "private": true,
   "scripts": {
     "build": "node build.js"
