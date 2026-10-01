@@ -31,21 +31,21 @@ function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="border-t border-[#e5e3dc] bg-white px-5 py-16 sm:px-8 lg:px-20 lg:py-20"
+      className="border-t border-[#e2e8e5] bg-white px-5 py-16 sm:px-8 lg:px-20 lg:py-20"
     >
 
       <div className="mx-auto mb-12 max-w-2xl text-center">
 
-        <div className="mb-3 text-[11px] font-extrabold uppercase tracking-[1.5px] text-[#3c8d87]">
+        <div className="mb-3 text-[11px] font-extrabold uppercase tracking-[1.5px] text-[#059669]">
           How SetuX Works
         </div>
 
-        <h2 className="text-3xl font-extrabold tracking-[-1.5px] text-[#183153] sm:text-4xl">
+        <h2 className="text-3xl font-extrabold tracking-[-1.5px] text-[#112a24] sm:text-4xl">
 
           One problem.
           <br />
 
-          <span className="text-[#3c8d87]">
+          <span className="text-[#059669]">
             Many possibilities.
           </span>
 
@@ -53,24 +53,24 @@ function HowItWorks() {
 
       </div>
 
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
 
         {steps.map((step) => (
 
           <div
             key={step.number}
-            className="rounded-xl border border-[#e5e3dc] bg-white p-5 transition hover:-translate-y-1 hover:shadow-[0_10px_35px_rgba(35,48,58,0.08)]"
+            className="group rounded-2xl border border-[#e2e8e5] bg-[#fbfdfc] p-6 transition duration-200 hover:-translate-y-1 hover:border-[#a7f3d0] hover:bg-white hover:shadow-[0_12px_35px_rgba(5,150,105,0.06)]"
           >
 
-            <span className="text-[11px] font-extrabold text-[#89918a]">
+            <span className="inline-block rounded-md border border-[#a7f3d0] bg-[#ecfdf5] px-2 py-0.5 text-[11px] font-extrabold text-[#065f46]">
               {step.number}
             </span>
 
-            <h3 className="mt-6 text-lg font-bold text-[#183153]">
+            <h3 className="mt-5 text-base font-bold text-[#112a24]">
               {step.title}
             </h3>
 
-            <p className="mt-2 text-xs leading-6 text-[#6d7780]">
+            <p className="mt-2 text-xs leading-5 text-[#52635d]">
               {step.text}
             </p>
 

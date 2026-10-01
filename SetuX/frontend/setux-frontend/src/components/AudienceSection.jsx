@@ -24,26 +24,26 @@ function AudienceSection() {
   ];
 
   return (
-    <section className="border-t border-[#e5e3dc] bg-white px-5 py-12 sm:px-8 lg:px-20">
+    <section className="border-t border-[#e2e8e5] bg-[#f8faf8] px-5 py-16 sm:px-8 lg:px-20">
 
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-px overflow-hidden rounded-xl bg-[#e5e3dc] sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-px overflow-hidden rounded-2xl border border-[#e2e8e5] bg-[#e2e8e5] sm:grid-cols-2 lg:grid-cols-4">
 
         {users.map((user) => (
 
           <div
             key={user.title}
-            className="bg-[#f7f7f3] p-6 sm:p-8"
+            className="bg-white p-7 transition duration-150 hover:bg-[#fbfdfc] sm:p-8"
           >
 
-            <div className="mb-4 text-2xl">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#ecfdf5] text-2xl">
               {user.icon}
             </div>
 
-            <b className="block text-base text-[#183153]">
+            <b className="block text-base font-bold text-[#112a24]">
               {user.title}
             </b>
 
-            <small className="mt-1 block text-xs leading-5 text-[#6d7780]">
+            <small className="mt-1.5 block text-xs leading-5 text-[#52635d]">
               {user.text}
             </small>
 

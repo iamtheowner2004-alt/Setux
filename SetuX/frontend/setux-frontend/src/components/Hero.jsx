@@ -19,24 +19,24 @@ function Hero() {
       {/* Left */}
       <div className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left">
 
-        <div className="mb-3 text-[11px] font-extrabold uppercase tracking-[1.5px] text-[#3c8d87]">
+        <div className="mb-3 text-[11px] font-extrabold uppercase tracking-[1.5px] text-[#059669]">
           Societal Innovation Platform
         </div>
 
-        <h1 className="text-4xl font-extrabold leading-[1.05] tracking-[-2px] text-[#183153] sm:text-5xl lg:text-6xl">
+        <h1 className="text-4xl font-extrabold leading-[1.05] tracking-[-2px] text-[#112a24] sm:text-5xl lg:text-6xl">
 
           From local problems
           <br />
 
           to{" "}
 
-          <span className="text-[#3c8d87]">
+          <span className="text-[#059669]">
             real solutions.
           </span>
 
         </h1>
 
-        <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-[#6d7780] sm:text-base lg:mx-0">
+        <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-[#52635d] sm:text-base lg:mx-0">
 
           SetuX connects citizens, universities and
           industries to transform real-world societal
@@ -49,66 +49,72 @@ function Hero() {
         <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
           <button
             onClick={handleReportProblemClick}
-            className="rounded-lg bg-[#183153] px-5 py-3 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-[#102945]"
+            className="rounded-xl bg-[#0f5132] px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[#0b3d26]"
           >
             + Report a Problem
           </button>
 
           <Link
             to="/login"
-            className="rounded-lg border border-[#d8d9d4] bg-white px-5 py-3 text-sm font-bold text-[#183153] transition hover:bg-[#f5f5f0]"
+            className="rounded-xl border border-[#d1dbd5] bg-white px-5 py-3.5 text-sm font-semibold text-[#112a24] shadow-sm transition hover:bg-[#f2f6f4]"
           >
             👥 Citizen Login
           </Link>
 
           <Link
             to="/admin/login"
-            className="rounded-lg border border-[#3c8d87]/30 bg-[#edf6f4] px-5 py-3 text-sm font-bold text-[#3c8d87] transition hover:bg-[#dcefe9]"
+            className="rounded-xl border border-[#a7f3d0] bg-[#ecfdf5] px-5 py-3.5 text-sm font-bold text-[#065f46] transition hover:bg-[#d1fae5]"
           >
             🔒 Admin Portal
           </Link>
         </div>
 
         {/* Trust */}
-        <div className="mt-10 grid grid-cols-1 gap-5 text-left sm:grid-cols-3">
+        <div className="mt-12 grid grid-cols-1 gap-5 text-left sm:grid-cols-3">
 
           <div className="flex items-center gap-3">
-            <b className="text-lg text-[#3c8d87]">01</b>
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ecfdf5] text-xs font-extrabold text-[#059669]">
+              01
+            </span>
 
             <div>
-              <strong className="block text-sm text-[#183153]">
+              <strong className="block text-sm font-bold text-[#112a24]">
                 Citizens
               </strong>
 
-              <small className="text-xs text-[#737c84]">
+              <small className="text-xs text-[#62736c]">
                 Share real problems
               </small>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <b className="text-lg text-[#3c8d87]">02</b>
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ecfdf5] text-xs font-extrabold text-[#059669]">
+              02
+            </span>
 
             <div>
-              <strong className="block text-sm text-[#183153]">
-                AI
+              <strong className="block text-sm font-bold text-[#112a24]">
+                AI Agents
               </strong>
 
-              <small className="text-xs text-[#737c84]">
+              <small className="text-xs text-[#62736c]">
                 Understands & matches
               </small>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <b className="text-lg text-[#3c8d87]">03</b>
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ecfdf5] text-xs font-extrabold text-[#059669]">
+              03
+            </span>
 
             <div>
-              <strong className="block text-sm text-[#183153]">
+              <strong className="block text-sm font-bold text-[#112a24]">
                 Institutions
               </strong>
 
-              <small className="text-xs text-[#737c84]">
+              <small className="text-xs text-[#62736c]">
                 Build solutions
               </small>
             </div>
@@ -121,10 +127,10 @@ function Hero() {
       {/* Right */}
       <div className="relative flex min-h-[350px] items-center justify-center">
 
-        {/* Background circles */}
-        <div className="absolute h-64 w-64 rounded-full bg-[#e9eeea] sm:h-80 sm:w-80"></div>
+        {/* Background soft ambient green circles */}
+        <div className="absolute h-64 w-64 rounded-full bg-[#dcfce7]/60 blur-2xl sm:h-80 sm:w-80"></div>
 
-        <div className="absolute bottom-2 left-8 h-36 w-36 rounded-full bg-[#e7efee] sm:h-52 sm:w-52"></div>
+        <div className="absolute bottom-2 left-8 h-36 w-36 rounded-full bg-[#ecfdf5]/80 blur-xl sm:h-52 sm:w-52"></div>
 
         <AIAnalysisCard />
 

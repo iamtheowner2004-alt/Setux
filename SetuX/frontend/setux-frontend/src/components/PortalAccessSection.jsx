@@ -13,17 +13,17 @@ function PortalAccessSection() {
   };
 
   return (
-    <section id="portals" className="border-t border-[#e5e3dc] bg-[#f5f6f2] px-5 py-16 sm:px-8 lg:px-20">
+    <section id="portals" className="border-t border-[#e2e8e5] bg-[#f4f7f5] px-5 py-16 sm:px-8 lg:px-20">
       <div className="mx-auto max-w-6xl">
         {/* Section Header */}
         <div className="text-center">
-          <div className="text-xs font-bold uppercase tracking-[1.5px] text-[#3c8d87]">
+          <div className="text-xs font-bold uppercase tracking-[1.5px] text-[#059669]">
             Direct Access Hub
           </div>
-          <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-[#183153] sm:text-4xl">
+          <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-[#112a24] sm:text-4xl">
             Choose Your SetuX Portal
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[#6d7780]">
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[#52635d]">
             Seamlessly access the citizen civic problem submission portal or the autonomous AI administrative control center.
           </p>
         </div>
@@ -31,54 +31,54 @@ function PortalAccessSection() {
         {/* Portal Cards Grid */}
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* 1. CITIZEN PORTAL CARD */}
-          <div className="flex flex-col justify-between rounded-2xl border border-[#e5e3dc] bg-white p-7 shadow-sm transition hover:shadow-md">
+          <div className="flex flex-col justify-between rounded-2xl border border-[#e2e8e5] bg-white p-7 shadow-sm transition hover:shadow-md">
             <div>
               <div className="flex items-center justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#edf6f4] text-2xl">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#ecfdf5] text-2xl">
                   👥
                 </div>
-                <span className="rounded-full bg-[#edf6f4] px-3 py-1 text-xs font-bold text-[#3c8d87]">
+                <span className="rounded-full border border-[#a7f3d0] bg-[#ecfdf5] px-3 py-1 text-xs font-bold text-[#065f46]">
                   Public Access
                 </span>
               </div>
 
-              <h3 className="mt-5 text-xl font-bold text-[#183153]">
+              <h3 className="mt-5 text-xl font-bold text-[#112a24]">
                 Citizen & Community Portal
               </h3>
 
-              <p className="mt-2 text-xs leading-6 text-[#6d7780]">
+              <p className="mt-2 text-xs leading-6 text-[#52635d]">
                 Submit localized societal problems, upload geo-tagged evidence, track real-time 5-stage AI lifecycle progress, and discover matched Indian universities.
               </p>
 
               <ul className="mt-4 space-y-2 text-xs text-[#35414c]">
                 <li className="flex items-center gap-2 font-medium">
-                  <span className="text-[#3c8d87]">✓</span> Post Civic & Environmental Issues
+                  <span className="text-[#059669]">✓</span> Post Civic & Environmental Issues
                 </li>
                 <li className="flex items-center gap-2 font-medium">
-                  <span className="text-[#3c8d87]">✓</span> Track Gemini NLP & Severity Scores
+                  <span className="text-[#059669]">✓</span> Track Gemini NLP & Severity Scores
                 </li>
                 <li className="flex items-center gap-2 font-medium">
-                  <span className="text-[#3c8d87]">✓</span> View OpenAlex Ranked University Roster
+                  <span className="text-[#059669]">✓</span> View OpenAlex Ranked University Roster
                 </li>
               </ul>
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-[#eeeeea] pt-5">
+            <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-[#f0f4f2] pt-5">
               <Link
                 to="/login"
-                className="flex-1 rounded-lg bg-[#183153] px-4 py-3 text-center text-xs font-bold text-white transition hover:bg-[#102945]"
+                className="flex-1 rounded-xl bg-[#0f5132] px-4 py-3 text-center text-xs font-bold text-white shadow-sm transition hover:bg-[#0b3d26]"
               >
                 Citizen Login →
               </Link>
               <Link
                 to="/dashboard"
-                className="rounded-lg border border-[#d8d9d4] bg-white px-4 py-3 text-xs font-bold text-[#183153] transition hover:bg-[#f5f5f0]"
+                className="rounded-xl border border-[#d1dbd5] bg-white px-4 py-3 text-xs font-bold text-[#112a24] transition hover:bg-[#f2f6f4]"
               >
                 My Dashboard
               </Link>
               <button
                 onClick={handleReportProblemClick}
-                className="rounded-lg bg-[#3c8d87] px-4 py-3 text-xs font-bold text-white transition hover:bg-[#2e6d68]"
+                className="rounded-xl border border-[#a7f3d0] bg-[#ecfdf5] px-4 py-3 text-xs font-bold text-[#065f46] transition hover:bg-[#d1fae5]"
               >
                 + Report
               </button>
@@ -86,48 +86,48 @@ function PortalAccessSection() {
           </div>
 
           {/* 2. ADMIN PORTAL CARD */}
-          <div className="flex flex-col justify-between rounded-2xl border border-blue-200 bg-white p-7 shadow-sm transition hover:shadow-md ring-1 ring-blue-500/10">
+          <div className="flex flex-col justify-between rounded-2xl border border-[#a7f3d0]/60 bg-white p-7 shadow-sm transition hover:shadow-md ring-1 ring-[#059669]/10">
             <div>
               <div className="flex items-center justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-2xl">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#ecfdf5] text-2xl">
                   🔒
                 </div>
-                <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800">
+                <span className="rounded-full border border-[#a7f3d0] bg-[#ecfdf5] px-3 py-1 text-xs font-bold text-[#065f46]">
                   Authorized Admin Only
                 </span>
               </div>
 
-              <h3 className="mt-5 text-xl font-bold text-[#183153]">
+              <h3 className="mt-5 text-xl font-bold text-[#112a24]">
                 Admin Multi-Agent Control Center
               </h3>
 
-              <p className="mt-2 text-xs leading-6 text-[#6d7780]">
+              <p className="mt-2 text-xs leading-6 text-[#52635d]">
                 Human-in-the-Loop management for academic candidate selection, automated outreach email dispatch, DuckDuckGo industry commercialization, and government escalation.
               </p>
 
               <ul className="mt-4 space-y-2 text-xs text-[#35414c]">
                 <li className="flex items-center gap-2 font-medium">
-                  <span className="text-blue-600">✓</span> Approve Higher Education Institutions (HEIs)
+                  <span className="text-[#059669]">✓</span> Approve Higher Education Institutions (HEIs)
                 </li>
                 <li className="flex items-center gap-2 font-medium">
-                  <span className="text-blue-600">✓</span> Dispatch Formal Outreach Emails via SMTP
+                  <span className="text-[#059669]">✓</span> Dispatch Formal Outreach Emails via SMTP
                 </li>
                 <li className="flex items-center gap-2 font-medium">
-                  <span className="text-blue-600">✓</span> Real-Time Indian Industry Search & Policy Escalation
+                  <span className="text-[#059669]">✓</span> Real-Time Indian Industry Search & Policy Escalation
                 </li>
               </ul>
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-[#eeeeea] pt-5">
+            <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-[#f0f4f2] pt-5">
               <Link
                 to="/admin/login"
-                className="flex-1 rounded-lg bg-[#183153] px-4 py-3 text-center text-xs font-bold text-white transition hover:bg-[#102945]"
+                className="flex-1 rounded-xl bg-[#112a24] px-4 py-3 text-center text-xs font-bold text-white shadow-sm transition hover:bg-[#0a1c18]"
               >
                 🔒 Admin Login Portal →
               </Link>
               <Link
                 to="/admin"
-                className="rounded-lg border border-[#183153] bg-white px-4 py-3 text-xs font-bold text-[#183153] transition hover:bg-[#edf3f1]"
+                className="rounded-xl border border-[#112a24] bg-white px-4 py-3 text-xs font-bold text-[#112a24] transition hover:bg-[#f2f6f4]"
               >
                 Admin Dashboard
               </Link>
