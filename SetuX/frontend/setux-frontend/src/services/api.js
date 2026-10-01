@@ -116,6 +116,17 @@ export const adminAPI = {
     return response.json();
   },
 
+  matchUniversities: async (problemId) => {
+    const response = await fetch(
+      `${AI_API_BASE}/admin/problems/${problemId}/match-universities`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    return response.json();
+  },
+
   approveUniversity: async (problemId, universityIndex = 0) => {
     const response = await fetch(
       `${AI_API_BASE}/admin/problems/${problemId}/approve-university?university_index=${universityIndex}`,

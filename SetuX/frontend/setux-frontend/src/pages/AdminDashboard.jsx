@@ -22,6 +22,7 @@ function AdminDashboard() {
   const [recipientEmail, setRecipientEmail] = useState("");
   const [sendingEmail, setSendingEmail] = useState(false);
   const [emailStatus, setEmailStatus] = useState("");
+  const [matchingUniversities, setMatchingUniversities] = useState(false);
 
   // Email Modal State (Industry)
   const [industryEmailModalOpen, setIndustryEmailModalOpen] = useState(false);
@@ -171,6 +172,29 @@ function AdminDashboard() {
   // =====================================================
   // UNIVERSITY ACTIONS
   // =====================================================
+
+  const handleMatchUniversities = async (probId) => {
+    try {
+      setMatchingUniversities(true);
+      const res = await adminAPI.matchUniversities(probId);
+      if (res.success && res.university_recommendations) {
+        showNotification(`✓ Matched ${res.university_recommendations.length} Indian universities via OpenAlex!`);
+        await loadData();
+        setSelectedProblem((prev) => ({
+          ...prev,
+          university_recommendations: res.university_recommendations,
+          ai_analysis: res.ai_analysis || prev.ai_analysis,
+        }));
+      } else {
+        showNotification("✕ Unable to match universities. Please try again.");
+      }
+    } catch (err) {
+      console.error("Match universities error:", err);
+      showNotification("✕ Error running OpenAlex university matcher.");
+    } finally {
+      setMatchingUniversities(false);
+    }
+  };
 
   const handleApproveUniversity = async (probId, uniIndex) => {
     try {
@@ -1050,6 +1074,42 @@ function AdminDashboard() {
                     </div>
                   );
                 })}
+              </div>
+            ) : selectedProblem ? (
+              <div className="rounded-2xl border border-dashed border-[#3c8d87]/40 bg-[#f7fbfa] p-8 text-center sm:p-10">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#edf6f4] text-2xl text-[#3c8d87]">
+                  🏛️
+                </div>
+                <h3 className="mt-4 text-lg font-bold text-[#183153]">
+                  No Academic Matches Found Yet for "{selectedProblem.title}"
+                </h3>
+                <p className="mx-auto mt-2 max-w-xl text-xs leading-relaxed text-[#6d7780]">
+                  Run our Academic Matcher AI Agent (Agent 3) to dynamically query the live OpenAlex 
+                  bibliographic database, analyze research publications, and rank the top Indian Higher 
+                  Education Institutions (IITs, NITs, Central Universities) tailored to this specific civic problem.
+                </p>
+                <div className="mt-6 flex justify-center">
+                  <button
+                    onClick={() =>
+                      handleMatchUniversities(
+                        selectedProblem._id || selectedProblem.problem_id
+                      )
+                    }
+                    disabled={matchingUniversities}
+                    className="inline-flex items-center gap-2 rounded-xl bg-[#3c8d87] px-6 py-3 text-xs font-bold text-white shadow-md transition hover:bg-[#2e6d68] disabled:opacity-50"
+                  >
+                    {matchingUniversities ? (
+                      <>
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        Searching OpenAlex Live Academic Database...
+                      </>
+                    ) : (
+                      <>
+                        ⚡ Search & Match Universities via OpenAlex (Live AI)
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             ) : (
               <div className="rounded-2xl border border-[#e5e3dc] bg-white p-8 text-center text-sm text-[#89918a]">

@@ -7,6 +7,8 @@ from app.services.email_service import (
     generate_university_email,
     send_email
 )
+from app.services.university_agent import find_best_universities
+from app.services.problem_analyzer import analyze_problem_with_ai
 
 
 router = APIRouter(
@@ -619,3 +621,67 @@ async def send_university_email(
             status_code=500,
             detail=str(error)
         )
+
+
+# ==========================================
+# ON-DEMAND LIVE UNIVERSITY MATCHING
+# ==========================================
+
+@router.post("/problems/{problem_id}/match-universities")
+async def match_universities_for_problem(problem_id: str):
+    try:
+        if not ObjectId.is_valid(problem_id):
+            raise HTTPException(status_code=400, detail="Invalid problem ID")
+
+        problem = problems_collection.find_one({"_id": ObjectId(problem_id)})
+        if not problem:
+            raise HTTPException(status_code=404, detail="Problem not found")
+
+        title = problem.get("title", "")
+        description = problem.get("description", "")
+        location = problem.get("location") or problem.get("address") or "India"
+
+        # Step 1: Extract or generate research queries via AI
+        ai_analysis = problem.get("ai_analysis")
+        research_queries = []
+        if ai_analysis and isinstance(ai_analysis, dict):
+            research_queries = ai_analysis.get("research_queries", [])
+
+        if not research_queries:
+            # Run fresh AI analysis to get high-precision research queries
+            analysis = analyze_problem_with_ai(
+                title=title,
+                description=description,
+                location=location
+            )
+            research_queries = analysis.get("research_queries", [title])
+            ai_analysis = analysis
+
+        # Step 2: Live OpenAlex Academic Search & Ranking
+        top_universities = find_best_universities(research_queries)
+
+        # Step 3: Persist results in MongoDB
+        update_doc = {
+            "university_recommendations": top_universities,
+            "status": "pending_admin_review"
+        }
+        if ai_analysis:
+            update_doc["ai_analysis"] = ai_analysis
+
+        problems_collection.update_one(
+            {"_id": ObjectId(problem_id)},
+            {"$set": update_doc}
+        )
+
+        return {
+            "success": True,
+            "message": f"Successfully matched {len(top_universities)} Indian universities via OpenAlex",
+            "problem_id": problem_id,
+            "university_recommendations": top_universities,
+            "ai_analysis": ai_analysis
+        }
+
+    except HTTPException:
+        raise
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
