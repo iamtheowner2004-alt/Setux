@@ -3,8 +3,8 @@
 // Bridges Node.js Backend (5000) & FastAPI AI Engine (8000)
 // =====================================================
 
-export const NODE_API_BASE = "http://localhost:5000/api";
-export const AI_API_BASE = "http://localhost:8000/api";
+export const NODE_API_BASE = import.meta.env.VITE_NODE_API_URL || "http://localhost:5000/api";
+export const AI_API_BASE = import.meta.env.VITE_AI_API_URL || "http://localhost:8000/api";
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");

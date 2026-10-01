@@ -1,8 +1,9 @@
 fastapi
 uvicorn[standard]
 python-dotenv
-google-gen-ai
+google-genai
 pydantic
-pymongo
+pymongo[srv]
 httpx
 fastapi-mail
+dnspython
